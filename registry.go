@@ -1,8 +1,8 @@
 package discovery
 
 import (
-	"github.com/prometheus/common/log"
 	"github.com/shopastro/registry"
+	"log"
 	"time"
 )
 
@@ -31,6 +31,10 @@ func (r *Registry) Register(svc *registry.Service) error {
 	return nil
 }
 
+func (r *Registry) Stop() {
+	r.close <- struct{}{}
+}
+
 func (r *Registry) keepAlive(svc *registry.Service) {
 	t := time.NewTicker(time.Duration(r.ttl) * time.Second)
 
@@ -38,7 +42,7 @@ func (r *Registry) keepAlive(svc *registry.Service) {
 		select {
 		case <-t.C:
 			if err := r.reg.Register(svc, registry.RegisterTTL(time.Duration(r.ttl))); err != nil {
-				log.Error(err)
+				log.Println(err)
 			}
 		case <-r.close:
 			return
