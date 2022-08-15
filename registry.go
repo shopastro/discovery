@@ -3,6 +3,8 @@ package discovery
 import (
 	"github.com/shopastro/registry"
 	"log"
+	"net"
+	"strings"
 	"time"
 )
 
@@ -48,4 +50,39 @@ func (r *Registry) keepAlive(svc *registry.Service) {
 			return
 		}
 	}
+}
+
+func (r *Registry) Address(addr string) (string, error) {
+	var (
+		err              error
+		advt, host, port string
+	)
+
+	if len(addr) > 0 {
+		advt = addr
+	}
+
+	if cnt := strings.Count(advt, ":"); cnt >= 1 {
+		host, port, err = net.SplitHostPort(advt)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		host = advt
+	}
+
+	if ip := net.ParseIP(host); ip != nil {
+
+	}
+
+	newAddr, err := Extract(host)
+	if err != nil {
+		return "", err
+	}
+
+	if port != "" {
+		newAddr = HostPort(newAddr, port)
+	}
+
+	return newAddr, nil
 }
