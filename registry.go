@@ -47,6 +47,10 @@ func (r *Registry) keepAlive(svc *registry.Service) {
 				log.Println(err)
 			}
 		case <-r.close:
+			if err := r.reg.Deregister(svc); err != nil {
+				log.Println(err)
+			}
+
 			return
 		}
 	}
