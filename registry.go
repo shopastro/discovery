@@ -13,6 +13,7 @@ type (
 		ttl   int
 		reg   registry.Registry
 		close chan struct{}
+		exit  chan struct{}
 	}
 )
 
@@ -20,6 +21,7 @@ func NewRegistry(reg registry.Registry, ttl int) *Registry {
 	return &Registry{
 		ttl:   ttl,
 		reg:   reg,
+		exit:  make(chan struct{}),
 		close: make(chan struct{}),
 	}
 }
@@ -35,6 +37,8 @@ func (r *Registry) Register(svc *registry.Service) error {
 
 func (r *Registry) Stop() {
 	r.close <- struct{}{}
+
+	<-r.exit
 }
 
 func (r *Registry) keepAlive(svc *registry.Service) {
@@ -51,6 +55,7 @@ func (r *Registry) keepAlive(svc *registry.Service) {
 				log.Println(err)
 			}
 
+			r.exit <- struct{}{}
 			return
 		}
 	}
