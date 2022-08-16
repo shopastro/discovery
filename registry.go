@@ -1,7 +1,7 @@
 package discovery
 
 import (
-	"github.com/shopastro/registry"
+	"github.com/yousinn/registry"
 	"log"
 	"net"
 	"strings"
@@ -38,7 +38,7 @@ func (r *Registry) Stop() {
 }
 
 func (r *Registry) keepAlive(svc *registry.Service) {
-	t := time.NewTicker(time.Duration(r.ttl) * time.Second)
+	t := time.NewTicker(time.Duration(r.ttl) * time.Millisecond)
 
 	for {
 		select {
