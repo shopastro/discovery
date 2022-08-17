@@ -2,7 +2,6 @@ package discovery
 
 import (
 	"context"
-	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -63,12 +62,9 @@ func (r *Resolver) resolver(resp []*registry.Result) {
 }
 
 func (r *Resolver) delete(svc *registry.Service) {
-	fmt.Println("watch delete", svc.Key)
-
 	r.addrsCacheList.Delete(svc.Key)
 
 	var addrs []resolver.Address
-
 	r.addrsCacheList.Range(func(key, value any) bool {
 		if addr, ok := value.(resolver.Address); ok {
 			addrs = append(addrs, addr)
@@ -85,8 +81,6 @@ func (r *Resolver) delete(svc *registry.Service) {
 }
 
 func (r *Resolver) update(svc *registry.Service) {
-	fmt.Println("watch update", svc.Key)
-
 	for _, node := range svc.Nodes {
 		addr := resolver.Address{
 			Addr:       node.Address,
