@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"context"
+	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -15,7 +16,7 @@ type (
 		cc             resolver.ClientConn
 		ctx            context.Context
 		reg            registry.Registry
-		addrsCacheList []resolver.Address
+		addrsCacheList sync.Map
 		wg             sync.WaitGroup
 		cancel         context.CancelFunc
 	}
@@ -61,37 +62,38 @@ func (r *Resolver) resolver(resp []*registry.Result) {
 	}
 }
 
-func (r *Resolver) update(svc *registry.Service) {
-	for _, node := range svc.Nodes {
-		addr := resolver.Address{
-			Addr:       node.Address,
-			ServerName: svc.Name,
+func (r *Resolver) delete(svc *registry.Service) {
+	fmt.Println("watch delete", svc.Key)
+
+	r.addrsCacheList.Delete(svc.Key)
+
+	var addrs []resolver.Address
+
+	r.addrsCacheList.Range(func(key, value any) bool {
+		if addr, ok := value.(resolver.Address); ok {
+			addrs = append(addrs, addr)
 		}
 
-		if !r.exist(r.addrsCacheList, addr) {
-			r.addrsCacheList = append(r.addrsCacheList, addr)
+		return true
+	})
 
-			if err := r.cc.UpdateState(resolver.State{Addresses: r.addrsCacheList}); err != nil {
-				log.Println(err)
-			}
-		}
+	if err := r.cc.UpdateState(resolver.State{
+		Addresses: addrs,
+	}); err != nil {
+		log.Println("[resolver delete]", err)
 	}
 }
 
-func (r *Resolver) delete(svc *registry.Service) {
+func (r *Resolver) update(svc *registry.Service) {
+	fmt.Println("watch update", svc.Key)
+
 	for _, node := range svc.Nodes {
 		addr := resolver.Address{
 			Addr:       node.Address,
 			ServerName: svc.Name,
 		}
 
-		if addrs, ok := r.remove(r.addrsCacheList, addr); ok {
-			r.addrsCacheList = addrs
-
-			if err := r.cc.UpdateState(resolver.State{Addresses: r.addrsCacheList}); err != nil {
-				log.Println(err)
-			}
-		}
+		r.addrsCacheList.LoadOrStore(svc.Key, addr)
 	}
 }
 
@@ -101,34 +103,19 @@ func (r *Resolver) sync() error {
 		return err
 	}
 
+	var addr []resolver.Address
+
 	for _, v := range resp {
 		for _, node := range v.Nodes {
-			r.addrsCacheList = append(r.addrsCacheList, resolver.Address{Addr: node.Address})
+			rsv := resolver.Address{Addr: node.Address}
+
+			addr = append(addr, rsv)
+
+			r.addrsCacheList.Store(v.Key, rsv)
 		}
 	}
 
-	return r.cc.UpdateState(resolver.State{Addresses: r.addrsCacheList})
-}
-
-func (r *Resolver) exist(address []resolver.Address, addr resolver.Address) bool {
-	for v := range address {
-		if address[v].Addr == addr.Addr {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (r *Resolver) remove(s []resolver.Address, addr resolver.Address) ([]resolver.Address, bool) {
-	for i := range s {
-		if s[i].Addr == addr.Addr {
-			s[i] = s[len(s)-1]
-			return s[:len(s)-1], true
-		}
-	}
-
-	return nil, false
+	return r.cc.UpdateState(resolver.State{Addresses: addr})
 }
 
 func (r *Resolver) ResolveNow(resolver.ResolveNowOptions) {}
