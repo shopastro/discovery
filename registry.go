@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"github.com/yousinn/registry"
+	"google.golang.org/grpc/resolver"
 	"log"
 	"net"
 	"strings"
@@ -39,6 +40,11 @@ func (r *Registry) Stop() {
 	r.close <- struct{}{}
 
 	<-r.exit
+}
+
+func (r *Registry) DiscoveryEnabled() {
+	resolver.Register(NewDiscovery(r.reg))
+	resolver.SetDefaultScheme("etcd")
 }
 
 func (r *Registry) keepAlive(svc *registry.Service) {
