@@ -9,6 +9,7 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/yousinn/registry-plugins v0.0.0-20220817024201-ae7f01511dd1 // indirect
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 )

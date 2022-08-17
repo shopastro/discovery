@@ -53,6 +53,8 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/yousinn/registry v0.0.0-20220817001750-62963bffbf5e h1:p9C3zFDJdveGl60Yw9mkkYCneD+I75BEPg0qq4XyUeA=
 github.com/yousinn/registry v0.0.0-20220817001750-62963bffbf5e/go.mod h1:w5hB6xwxwHRyp2bK7zoT14z5lLeul/dfQnk32/HJVZ4=
+github.com/yousinn/registry-plugins v0.0.0-20220817024201-ae7f01511dd1 h1:KnI2QBJ7k+h5roFWNBOm18OCfAJ+5EsMQmhH2j9ZfSA=
+github.com/yousinn/registry-plugins v0.0.0-20220817024201-ae7f01511dd1/go.mod h1:yXvIGYVisyfmDEBAdaXxia3xQmRxZaBTr6xhqFE+dfY=
 go.opentelemetry.io/proto/otlp v0.7.0/go.mod h1:PqfVotwruBrMGOCsRd/89rSnXhoiJIqeYNgFYFoEGnI=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=

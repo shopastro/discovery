@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"context"
+	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -41,11 +42,14 @@ func (r *Resolver) watch() {
 
 		case resp := <-ups:
 			r.resolver(resp)
+			fmt.Println("watch start ...")
 
 		case <-t.C:
 			if err := r.sync(); err != nil {
 				log.Println("sync", err)
 			}
+
+			fmt.Println("watch ticker start ...")
 		}
 	}
 }
