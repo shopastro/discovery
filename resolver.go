@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"context"
+	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -23,13 +24,14 @@ type (
 
 func (r *Resolver) watch() {
 	if err := r.sync(); err != nil {
-		log.Println("init sync", err)
+		log.Println(fmt.Sprintf("init sync name: %s", r.name), err)
 	}
 
 	defer r.wg.Done()
 
 	w, err := r.reg.Watch(registry.WatchContext(r.ctx))
 	if err != nil {
+		log.Println(fmt.Sprintf("ticker sync name: %s", r.name), err)
 		return
 	}
 
@@ -48,7 +50,7 @@ func (r *Resolver) watch() {
 
 		case <-t.C:
 			if err := r.sync(); err != nil {
-				log.Println("sync", err)
+				log.Println(fmt.Sprintf("ticker sync name: %s", r.name), err)
 			}
 		}
 	}
@@ -80,7 +82,7 @@ func (r *Resolver) delete(svc *registry.Service) {
 	if err := r.cc.UpdateState(resolver.State{
 		Addresses: addrs,
 	}); err != nil {
-		log.Println("[resolver delete]", err)
+		log.Println(fmt.Sprintf("[resolver delete. name: %s]", r.name), err)
 	}
 }
 

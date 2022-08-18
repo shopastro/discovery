@@ -44,7 +44,6 @@ func (r *Registry) Stop() {
 
 func (r *Registry) DiscoveryEnabled() {
 	resolver.Register(NewDiscovery(r.reg))
-	resolver.SetDefaultScheme("etcd")
 }
 
 func (r *Registry) keepAlive(svc *registry.Service) {
