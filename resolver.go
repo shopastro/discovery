@@ -22,6 +22,10 @@ type (
 )
 
 func (r *Resolver) watch() {
+	if err := r.sync(); err != nil {
+		log.Println("init sync", err)
+	}
+
 	defer r.wg.Done()
 
 	w, err := r.reg.Watch(registry.WatchContext(r.ctx))
@@ -73,6 +77,7 @@ func (r *Resolver) delete(svc *registry.Service) {
 		return true
 	})
 
+	log.Println("[resolver delete]", addrs)
 	if err := r.cc.UpdateState(resolver.State{
 		Addresses: addrs,
 	}); err != nil {
@@ -87,6 +92,7 @@ func (r *Resolver) update(svc *registry.Service) {
 			ServerName: svc.Name,
 		}
 
+		log.Println("[resolver update]", addr)
 		r.addrsCacheList.LoadOrStore(svc.Key, addr)
 	}
 }
@@ -109,6 +115,7 @@ func (r *Resolver) sync() error {
 		}
 	}
 
+	log.Println("[resolver sync]", addr)
 	return r.cc.UpdateState(resolver.State{Addresses: addr})
 }
 
