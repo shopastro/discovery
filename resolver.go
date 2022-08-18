@@ -2,7 +2,6 @@ package discovery
 
 import (
 	"context"
-	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -78,7 +77,6 @@ func (r *Resolver) delete(svc *registry.Service) {
 		return true
 	})
 
-	log.Println(fmt.Sprintf("[resolver delete name: %s]", r.name), addrs)
 	if err := r.cc.UpdateState(resolver.State{
 		Addresses: addrs,
 	}); err != nil {
@@ -93,7 +91,6 @@ func (r *Resolver) update(svc *registry.Service) {
 			ServerName: svc.Name,
 		}
 
-		log.Println(fmt.Sprintf("[resolver delete name: %s]", r.name), addr)
 		r.addrsCacheList.LoadOrStore(svc.Key, addr)
 	}
 }
@@ -116,7 +113,6 @@ func (r *Resolver) sync() error {
 		}
 	}
 
-	log.Println(fmt.Sprintf("[resolver delete name: %s]", r.name), addr)
 	return r.cc.UpdateState(resolver.State{Addresses: addr})
 }
 
