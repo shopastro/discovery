@@ -2,8 +2,6 @@ package discovery
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"github.com/yousinn/registry"
 	"google.golang.org/grpc/resolver"
 	"strings"
@@ -22,9 +20,6 @@ func NewDiscovery(reg registry.Registry) resolver.Builder {
 }
 
 func (d *Discovery) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	body, err := json.Marshal(target.URL)
-
-	fmt.Println("target.URL", body, err)
 	r := &Resolver{
 		cc:   cc,
 		reg:  d.reg,
