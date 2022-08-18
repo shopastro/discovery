@@ -45,10 +45,20 @@ func (d *Discovery) Scheme() string {
 
 func (d *Discovery) name(target string) string {
 	targets := strings.SplitN(target, "/", 2)
-	fmt.Println("targets name", target, "targets list", targets)
-	if len(target) >= 1 {
-		return targets[0]
+	if len(targets) >= 1 {
+		switch len(targets) {
+		case 1:
+			if targets[0] != "" {
+				hosts := strings.SplitN(targets[0], ":", 2)
+				return hosts[0]
+			}
+		case 2:
+			if targets[1] != "" {
+				hosts := strings.SplitN(targets[1], ":", 2)
+				return hosts[0]
+			}
+		}
 	}
 
-	return ""
+	return target
 }
