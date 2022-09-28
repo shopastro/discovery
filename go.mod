@@ -1,10 +1,10 @@
-module github.com/yousinn/discovery
+module github.com/shopastro/discovery
 
 go 1.18
 
 require (
-	github.com/yousinn/registry v0.0.0-20220817133517-4bd604e6a346
-	google.golang.org/grpc v1.48.0
+	github.com/shopastro/registry v0.0.0-20220928163230-ce5e31b0634a
+	google.golang.org/grpc v1.49.0
 )
 
 require (

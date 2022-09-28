@@ -2,9 +2,10 @@ package discovery
 
 import (
 	"context"
-	"github.com/yousinn/registry"
-	"google.golang.org/grpc/resolver"
 	"strings"
+
+	"github.com/shopastro/registry"
+	"google.golang.org/grpc/resolver"
 )
 
 type (

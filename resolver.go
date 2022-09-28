@@ -3,11 +3,12 @@ package discovery
 import (
 	"context"
 	"fmt"
-	"github.com/yousinn/registry"
-	"google.golang.org/grpc/resolver"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/shopastro/registry"
+	"google.golang.org/grpc/resolver"
 )
 
 type (

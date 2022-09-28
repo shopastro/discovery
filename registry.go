@@ -1,12 +1,13 @@
 package discovery
 
 import (
-	"github.com/yousinn/registry"
-	"google.golang.org/grpc/resolver"
 	"log"
 	"net"
 	"strings"
 	"time"
+
+	"github.com/shopastro/registry"
+	"google.golang.org/grpc/resolver"
 )
 
 type (
